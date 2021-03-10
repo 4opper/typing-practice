@@ -1,12 +1,24 @@
-import { Role } from "../entities/role";
-import { Admin } from "../entities/admin";
-import { Client } from "../entities/client";
-import { Moderator } from "../entities/moderator";
-import { Operation } from "../entities/operation";
-import type { User } from "../entities/user";
-import type { RoleToUser } from "../entities/role-to-user";
+import {Role} from "../entities/role";
+import {Admin} from "../entities/admin";
+import {Client} from "../entities/client";
+import {Moderator} from "../entities/moderator";
+import {Operation} from "../entities/operation";
+import type {LoggedInUser, User} from "../entities/user";
+import type {RoleToUser} from "../entities/role-to-user";
 
 export default class UserService {
+  static adminOperations = {
+    [Role.ADMIN]: [Operation.UPDATE_TO_MODERATOR],
+    [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN],
+    [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
+  }
+
+  static moderatorOperations = {
+    [Role.ADMIN]: [],
+    [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT],
+    [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
+  }
+
   private users: readonly User[] = [];
 
   async getAllUsers(): Promise<readonly User[]> {
@@ -45,14 +57,17 @@ export default class UserService {
     return this.users;
   }
 
-  getAvailableOperations(user: User, currenUser: User): Operation[] {
-    // Вам нужно поменять логику внутри getAvailableOperations для того, что бы это работало с логином
-    throw new Error("Not Implemented")
-    // if (user instanceof Admin || user instanceof Client) {
-    //   return [Operation.UPDATE_TO_MODERATOR];
-    // }
+  getAvailableOperations(user: User, currentUser: LoggedInUser): Operation[] {
+    if (!currentUser) {
+      return []
+    }
 
-    // return [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN];
+    switch(currentUser.role) {
+      case Role.ADMIN:
+        return UserService.adminOperations[user.role]
+      case Role.MODERATOR:
+        return UserService.moderatorOperations[user.role]
+    }
   }
 
   getConstructorByRole(role: Role) {
