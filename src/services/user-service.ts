@@ -21,6 +21,17 @@ export default class UserService {
     return this.users;
   }
 
+  async getUserByCreds(email: string, password: string): Promise<User> {
+    const allUsers = await this.getAllUsers();
+    const user = allUsers.find(u => u.email === email.toLowerCase() && u.password === password)
+
+    if (!user) {
+      throw new Error('No such user')
+    }
+
+    return user
+  }
+
   private fetch(): Promise<any> {
     return import("../mocks/users.json");
   }
