@@ -7,16 +7,22 @@ import type {LoggedInUser, User} from "../entities/user";
 import type {RoleToUser} from "../entities/role-to-user";
 
 export default class UserService {
-  static adminOperations = {
-    [Role.ADMIN]: [Operation.UPDATE_TO_MODERATOR],
-    [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN],
-    [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
-  }
-
-  static moderatorOperations = {
-    [Role.ADMIN]: [],
-    [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT],
-    [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
+  static availableOperations = {
+    [Role.CLIENT]: {
+      [Role.ADMIN]: [],
+      [Role.MODERATOR]: [],
+      [Role.CLIENT]: []
+    },
+    [Role.MODERATOR]: {
+      [Role.ADMIN]: [],
+      [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT],
+      [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
+    },
+    [Role.ADMIN]: {
+      [Role.ADMIN]: [Operation.UPDATE_TO_MODERATOR],
+      [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN],
+      [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
+    }
   }
 
   private users: readonly User[] = [];
@@ -62,12 +68,7 @@ export default class UserService {
       return []
     }
 
-    switch(currentUser.role) {
-      case Role.ADMIN:
-        return UserService.adminOperations[user.role]
-      case Role.MODERATOR:
-        return UserService.moderatorOperations[user.role]
-    }
+    return UserService.availableOperations[currentUser.role][user.role]
   }
 
   getConstructorByRole(role: Role) {
