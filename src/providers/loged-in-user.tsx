@@ -16,7 +16,7 @@ type LogedInProviderProps = {
 };
 
 type LogedInUserState = {
-  user: LoggedInUser;
+  user: LoggedInUser | null;
 };
 
 type LogedInProviderContext = {

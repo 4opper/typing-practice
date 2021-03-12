@@ -13,6 +13,10 @@ export default function Dashboard(_: RouteComponentProps) {
   const currentUser = useCurrentUser();
   const [users, onUserUpdates] = useUsers();
 
+  if (!currentUser) {
+    return null;
+  }
+
   const columns = [
     {
       title: "Name",

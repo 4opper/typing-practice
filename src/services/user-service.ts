@@ -6,25 +6,27 @@ import {Operation} from "../entities/operation";
 import type {LoggedInUser, User} from "../entities/user";
 import type {RoleToUser} from "../entities/role-to-user";
 
-export default class UserService {
-  static availableOperations = {
-    [Role.CLIENT]: {
-      [Role.ADMIN]: [],
-      [Role.MODERATOR]: [],
-      [Role.CLIENT]: []
-    },
-    [Role.MODERATOR]: {
-      [Role.ADMIN]: [],
-      [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT],
-      [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
-    },
-    [Role.ADMIN]: {
-      [Role.ADMIN]: [Operation.UPDATE_TO_MODERATOR],
-      [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN],
-      [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
-    }
+const AVAILABLE_OPERATIONS = {
+  [Role.CLIENT]: {
+    [Role.ADMIN]: [],
+    [Role.MODERATOR]: [],
+    [Role.CLIENT]: []
+  },
+  [Role.MODERATOR]: {
+    [Role.ADMIN]: [],
+    [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT],
+    [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
+  },
+  [Role.ADMIN]: {
+    [Role.ADMIN]: [Operation.UPDATE_TO_MODERATOR],
+    [Role.MODERATOR]: [Operation.UPDATE_TO_CLIENT, Operation.UPDATE_TO_ADMIN],
+    [Role.CLIENT]: [Operation.UPDATE_TO_MODERATOR]
   }
+} as const;
 
+type AVAILABLE_OPERATIONS = typeof AVAILABLE_OPERATIONS;
+
+export default class UserService {
   private users: readonly User[] = [];
 
   async getAllUsers(): Promise<readonly User[]> {
@@ -63,12 +65,8 @@ export default class UserService {
     return this.users;
   }
 
-  getAvailableOperations(user: User, currentUser: LoggedInUser): Operation[] {
-    if (!currentUser) {
-      return []
-    }
-
-    return UserService.availableOperations[currentUser.role][user.role]
+  getAvailableOperations<U1 extends User, U2 extends LoggedInUser>(user: U1, currentUser: U2) {
+    return AVAILABLE_OPERATIONS[currentUser.role][user.role] as AVAILABLE_OPERATIONS[U2["role"]][U1["role"]];
   }
 
   getConstructorByRole(role: Role) {
