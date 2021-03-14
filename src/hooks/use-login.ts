@@ -3,7 +3,8 @@ import { navigate } from "@reach/router";
 import { useContext, useEffect } from "react";
 import { LogedInActionType, LogedInUser } from "../providers/loged-in-user";
 import type { User } from "../entities/user";
-import {ValidEmail, ValidPassword} from "../services/login-service";
+import {ValidEmail} from "../utils/validators/valid-email";
+import {ValidPassword} from "../utils/validators/valid-password";
 
 export type Credentials = {
   email: string;
