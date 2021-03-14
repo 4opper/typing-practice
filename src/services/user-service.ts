@@ -3,7 +3,7 @@ import {Admin} from "../entities/admin";
 import {Client} from "../entities/client";
 import {Moderator} from "../entities/moderator";
 import {Operation} from "../entities/operation";
-import type {LoggedInUser, User} from "../entities/user";
+import type {UserWithDashboardAccess, User} from "../entities/user";
 import type {RoleToUser} from "../entities/role-to-user";
 
 const AVAILABLE_OPERATIONS = {
@@ -65,7 +65,7 @@ export default class UserService {
     return this.users;
   }
 
-  getAvailableOperations<U1 extends User, U2 extends LoggedInUser>(user: U1, currentUser: U2) {
+  getAvailableOperations<U1 extends User, U2 extends UserWithDashboardAccess>(user: U1, currentUser: U2) {
     return AVAILABLE_OPERATIONS[currentUser.role][user.role] as AVAILABLE_OPERATIONS[U2["role"]][U1["role"]];
   }
 

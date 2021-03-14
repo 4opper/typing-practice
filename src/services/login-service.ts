@@ -1,8 +1,5 @@
-import or from "../utils/or";
-import {Moderator} from "../entities/moderator";
-import {Admin} from "../entities/admin";
 import UserService from "./user-service";
-import {LoggedInUser, User} from "../entities/user";
+import { User} from "../entities/user";
 
 export class ValidEmail {
   value: string;
@@ -45,13 +42,11 @@ export class ValidPassword {
 }
 
 export default class LoginService {
-  static adminOrModerator = or(Admin, Moderator)
-
   constructor(private readonly userService: UserService) {}
 
-  public async login(email: ValidEmail, password: ValidPassword): Promise<LoggedInUser> {
+  public async login(email: ValidEmail, password: ValidPassword): Promise<User> {
     const user = await this.userService.getUserByCreds(email.value, password.value)
 
-    return LoginService.adminOrModerator(user)
+    return user
   }
 }

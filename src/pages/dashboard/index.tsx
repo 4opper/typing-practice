@@ -8,6 +8,8 @@ import useCurrentUser from "../../hooks/use-current-user";
 import { Table, Breadcrumb } from "antd";
 import type { User } from "../../entities/user";
 import type { RouteComponentProps } from "@reach/router";
+import {Client} from "../../entities/client";
+import {Redirect} from "@reach/router";
 
 export default function Dashboard(_: RouteComponentProps) {
   const currentUser = useCurrentUser();
@@ -15,6 +17,10 @@ export default function Dashboard(_: RouteComponentProps) {
 
   if (!currentUser) {
     return null;
+  }
+
+  if (Client.is(currentUser)) {
+    return <Redirect to="/not-found" />
   }
 
   const columns = [

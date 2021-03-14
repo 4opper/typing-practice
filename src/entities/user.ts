@@ -4,4 +4,4 @@ import type { Moderator } from "./moderator";
 
 export type User = Admin | Client | Moderator;
 
-export type LoggedInUser = Admin | Moderator;
+export type UserWithDashboardAccess = Admin | Moderator;
