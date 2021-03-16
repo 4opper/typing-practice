@@ -19,7 +19,7 @@ export default function Dashboard(_: RouteComponentProps) {
     return null;
   }
 
-  if (Client.is(currentUser)) {
+  if (Client.guard(currentUser)) {
     return <Redirect to="/not-found" />
   }
 
