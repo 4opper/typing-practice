@@ -3,8 +3,6 @@ import { navigate } from "@reach/router";
 import { useContext, useEffect } from "react";
 import { LogedInActionType, LogedInUser } from "../providers/loged-in-user";
 import type { User } from "../entities/user";
-import {ValidEmail} from "../utils/validators/valid-email";
-import {ValidPassword} from "../utils/validators/valid-password";
 
 export type Credentials = {
   email: string;
@@ -19,7 +17,14 @@ export default function useLogin(credentials: Credentials | null): User | null {
     if (!credentials || !dispatch) {
       return;
     }
-    loginService.login(ValidEmail.from(credentials.email), ValidPassword.from(credentials.password))
+
+    const validCreds = loginService.validateCreds(credentials);
+
+    if (!validCreds) {
+      return;
+    }
+
+    loginService.login(validCreds.email, validCreds.password)
       .then((user) => dispatch!({ type: LogedInActionType.LOG_IN, payload: user }))
       .then(() => navigate("/"))
       .catch(e => alert(e.message));

@@ -1,19 +1,7 @@
-export class ValidPassword {
-    value: string;
+import * as t from "runtypes";
 
-    static from(password: string): ValidPassword {
-        const passwordRegex = /[a-zA-Z0-9]{4,}/
+const PASSWORD_REGEXP = /[a-zA-Z0-9]{4,}/
 
-        if (passwordRegex.test(password)) {
-            return new ValidPassword(password)
-        }
+export const ValidPassword = t.String.withBrand('ValidPassword').withConstraint((password) => PASSWORD_REGEXP.test(password))
 
-        throw new Error('Password is not valid')
-    }
-
-    private constructor(password: string) {
-        this.value = password
-    }
-
-    private readonly _type = Symbol("validPassword");
-}
+export type ValidPassword = t.Static<typeof ValidPassword>

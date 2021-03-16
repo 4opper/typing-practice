@@ -1,10 +1,10 @@
 import { Role } from "../entities/role";
 import { User, UserWithDashboardAccess } from "../entities/user";
-import { Admin } from "../entities/admin";
 import { castTo } from "../entities/role-to-user";
-import { Client } from "../entities/client";
 import { Operation } from "../entities/operation";
 import type { RoleToUser } from "../entities/role-to-user";
+import {ValidEmail} from "../utils/validators/valid-email";
+import {ValidPassword} from "../utils/validators/valid-password";
 
 const AVAILABLE_OPERATIONS = {
   [Role.CLIENT]: {
@@ -38,7 +38,7 @@ export default class UserService {
     return this.users;
   }
 
-  async getUserByCreds(email: string, password: string): Promise<User> {
+  async getUserByCreds(email: ValidEmail, password: ValidPassword): Promise<User> {
     const allUsers = await this.getAllUsers();
     const user = allUsers.find(u => u.email === email.toLowerCase() && u.password === password)
 

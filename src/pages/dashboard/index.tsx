@@ -20,7 +20,7 @@ export default function Dashboard(_: RouteComponentProps) {
   }
 
   if (Client.guard(currentUser)) {
-    return <Redirect to="/not-found" />
+    return <Redirect to="/not-found" noThrow />
   }
 
   const columns = [

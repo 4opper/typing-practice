@@ -1,19 +1,7 @@
-export class ValidEmail {
-    value: string;
+import * as t from "runtypes";
 
-    static from(email: string): ValidEmail {
-        const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+const EMAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-        if (emailRegex.test(email)) {
-            return new ValidEmail(email)
-        }
+export const ValidEmail = t.String.withBrand('ValidEmail').withConstraint((email) => EMAIL_REGEXP.test(email))
 
-        throw new Error('Email is not valid')
-    }
-
-    private constructor(email: string) {
-        this.value = email
-    }
-
-    private readonly _type = Symbol("validEmail");
-}
+export type ValidEmail = t.Static<typeof ValidEmail>
