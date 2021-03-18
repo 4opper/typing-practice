@@ -8,15 +8,10 @@ export default class LoginService {
   constructor(private readonly userService: UserService) {}
 
   public validateCreds(creds: Credentials) {
-    try {
-      const email = ValidEmail.check(creds.email);
-      const password = ValidPassword.check(creds.password);
+    const email = ValidEmail.check(creds.email);
+    const password = ValidPassword.check(creds.password);
 
-      return { email, password };
-    } catch (e) {
-      alert(e)
-      return null;
-    }
+    return { email, password };
   }
 
   public async login(email: ValidEmail, password: ValidPassword): Promise<User> {
