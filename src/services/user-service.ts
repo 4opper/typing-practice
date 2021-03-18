@@ -1,5 +1,6 @@
 import { Role } from "../entities/role";
-import { User, UserWithDashboardAccess } from "../entities/user";
+import { User} from "../entities/user";
+import { UserWithDashboardAccess } from "../entities/user-with-dashboard-access";
 import { castTo } from "../entities/role-to-user";
 import { Operation } from "../entities/operation";
 import type { RoleToUser } from "../entities/role-to-user";
